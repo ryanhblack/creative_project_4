@@ -27,7 +27,7 @@ const Comment = mongoose.model('Comment', commentSchema);
 // add comment
 router.post("/:id", validUser, async (req, res) => {
   const comment = new Comment({
-    user: req.user,
+    user: req.body.user,
     photo: req.params.id,
     comment: req.body.comment,
   });

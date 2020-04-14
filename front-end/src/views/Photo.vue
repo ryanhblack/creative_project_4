@@ -15,7 +15,7 @@
     </form>
     <div class="comment" v-for="comment in comments" v-bind:key="comment._id">
       <p class="commentText">{{ comment.comment }}</p>
-      <p class="author">by {{ photo.user.firstName }} {{ photo.user.lastName }}</p>
+      <p class="author">by {{ comment.user.firstName }} {{ comment.user.lastName }}</p>
       <p class="commentDate">{{ formatDate(comment.created) }}</p>
     </div>
   </div>
@@ -72,6 +72,7 @@ export default {
       try {
         await axios.post('/api/comments/' + this.$route.params.id, {
           comment: this.comment,
+          user: this.user._id,
         });
         this.getComments();
       } catch (error) {
