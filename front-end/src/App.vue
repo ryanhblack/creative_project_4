@@ -1,57 +1,61 @@
 <template>
   <div id="app">
     <header id="header">
-      <h1>Photo Bomb</h1>
+      <h1>Event Scheduler</h1>
       <nav>
-        <router-link to="/"><i class="fas fa-home"></i></router-link>
-        <router-link to="/dashboard"><i class="fas fa-user"></i></router-link>
+        <router-link to="/"><i class="fas fa-home"></i>Home</router-link>
+        <router-link to="/dashboard"><i class="fas fa-user"></i>My Events</router-link>
       </nav>
     </header>
-    <router-view />
+    <router-view id="content" />
     <div id="footer">
-      <p>Link to the private repository for this project can be found at <a href="https://github.com/BYU-CS-260-Winter-2020/lab-5-photo-bomb-ryanhblack">https://github.com/BYU-CS-260-Winter-2020/lab-5-photo-bomb-ryanhblack</a></p>
+      <p>Link to the private repository for this project can be found at <a href="https://github.com/ryanhblack/creative_project_4">https://github.com/ryanhblack/creative_project_4</a></p>
     </div>
   </div>
 </template>
 
 <style>
-/* Color scheme: https://paletton.com/#uid=7040u0knHs+edG7jrvYscpiuCk2 */
-/* red: #e74c3c
- * blue: #277E8E
- */
 body {
   font-family: 'Work Sans', sans-serif;
   font-weight: 300;
   font-size: 13pt;
-  margin: 0px 200px;
+  margin: 0px 10%;
 }
 
 #header {
-  /* Semi-circle */
-  margin: 0 1em 1em 0;
-  height: 100px;
-  width: 200px;
-  border-bottom-left-radius: 200px;
-  border-bottom-right-radius: 200px;
+  padding: 10px 40px;
+  height: 38px;
+  width: 100%;
   /* Fixed position */
   position: fixed;
   z-index: 10000;
   left: 50%;
   transform: translate(-50%, 0);
-  /* Color and alignment */
-  background: #e74c3c;
+  background: #00f;
   text-align: center;
   box-shadow: 0 0 0 1em #FFF;
 }
 
 nav {
-  display: flex;
-  justify-content: center;
+  display: box;
+  float: right;
+  max-width: 70%;
+  padding: 5px 20px;
+}
+
+nav a {
+  font-weight: 500;
+  color: #fff;
+  text-decoration: none;
 }
 
 h1 {
   color: #fff;
-  font-size: 18px;
+  font-size: 28px;
+  float: left;
+  max-width: 30%;
+  margin: 0px;
+  padding-left: 20px;
 }
 
 h2 {
@@ -62,6 +66,10 @@ h2 {
   font-size: 25px;
   color: #fff;
   width: 50px;
+}
+
+#content {
+  padding-top: 78px;
 }
 
 .pure-button-primary {

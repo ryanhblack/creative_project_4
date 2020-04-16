@@ -1,29 +1,29 @@
 <template>
 <div class="main">
   <div class="menu">
-    <p><a @click="toggleUpload"><i class="fas fa-image"></i></a></p>
-    <h2>{{user.firstName}} {{user.lastName}} <a @click="logout"><i class="fas fa-sign-out-alt"></i></a></h2>
-    <uploader :show="show" @close="close" @uploadFinished="uploadFinished" />
+    <p><b>My Events</b> <a class="add-event" @click="toggleEventAdder"><i class="far fa-calendar-plus"></i> Add Event</a></p>
+    <h2>{{user.firstName}} {{user.lastName}} <a class="logout" @click="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></h2>
+    <eventAdder :show="show" @close="close" @eventAddFinished="eventAddFinished" />
   </div>
-  <image-gallery :photos="photos" />
+  <calendar :events="events" />
   <p v-if="error">{{error}}</p>
 </div>
 </template>
 
 <script>
 import axios from 'axios';
-import Uploader from '@/components/Uploader.vue';
-import ImageGallery from '@/components/ImageGallery.vue';
+import EventAdder from '@/components/EventAdder.vue';
+import Calendar from '@/components/Calendar.vue';
 export default {
-  name: 'MyPhotos',
+  name: 'MyEvents',
   components: {
-    Uploader,
-    ImageGallery
+    EventAdder,
+    Calendar
   },
   data() {
     return {
       show: false,
-      photos: [],
+      events: [],
       error: '',
     }
   },
@@ -33,7 +33,7 @@ export default {
     },
   },
   created() {
-    this.getPhotos();
+    this.getEvents();
   },
   methods: {
     async logout() {
@@ -44,10 +44,10 @@ export default {
         this.$root.$data.user = null;
       }
     },
-    async getPhotos() {
+    async getEvents() {
       try {
-        this.response = await axios.get("/api/photos");
-        this.photos = this.response.data;
+        this.response = await axios.get("/api/events");
+        this.events = this.response.data;
       } catch (error) {
         this.error = error.response.data.message;
       }
@@ -55,12 +55,12 @@ export default {
     close() {
       this.show = false;
     },
-    toggleUpload() {
+    toggleEventAdder() {
       this.show = true;
     },
-    async uploadFinished() {
+    async eventAddFinished() {
       this.show = false;
-      this.getPhotos();
+      this.getEvents();
     },
   }
 }
@@ -74,5 +74,15 @@ export default {
 
 .menu h2 {
   font-size: 14px;
+}
+
+.add-event {
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.logout {
+  margin-left: 10px;
+  cursor: pointer;
 }
 </style>

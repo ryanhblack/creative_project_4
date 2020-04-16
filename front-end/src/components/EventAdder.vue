@@ -2,8 +2,8 @@
 <transition v-if="show" name="modal">
   <div class="modal-mask">
     <div class="modal-container">
-      <form class="pure-form" @submit.prevent="upload">
-        <legend>Upload a picture</legend>
+      <form class="pure-form" @submit.prevent="addEvent">
+        <legend>Create An Event</legend>
         <fieldset>
           <input v-model="title" placeholder="Title">
         </fieldset>
@@ -11,18 +11,21 @@
           <textarea v-model="description" placeholder="Description"></textarea>
         </fieldset>
         <fieldset>
-          <div class="imageInput" @click="chooseImage">
-            <img v-if="url" :src="url" />
-            <div v-if="!url" class="placeholder">
-              Choose an Image
-            </div>
-            <input class="fileInput" ref="fileInput" type="file" @input="fileChanged">
-          </div>
-          <p v-if="error" class="error">{{error}}</p>
+          <input v-model="dateTime" type="datetime-local">
+        </fieldset>
+        <fieldset>
+          <select v-model="category">
+            <option selected disabled>Choose a Category</option>
+            <option value="work">Work</option>
+            <option value="school">School</option>
+            <option value="social">Social</option>
+            <option value="family">Family</option>
+            <option value="other">Other</option>
+          </select>
         </fieldset>
         <fieldset class="buttons">
           <button type="button" @click="close" class="pure-button">Close</button>
-          <button type="submit" class="pure-button pure-button-primary right">Upload</button>
+          <button type="submit" class="pure-button pure-button-primary right">Create</button>
         </fieldset>
       </form>
     </div>
@@ -33,7 +36,7 @@
 <script>
 import axios from 'axios';
 export default {
-  name: 'Uploader',
+  name: 'EventAdder',
   props: {
     show: Boolean,
   },
@@ -41,34 +44,30 @@ export default {
     return {
       title: '',
       description: '',
-      url: '',
-      file: null,
+      dateTime: '',
+      category: '',
       error: '',
     }
   },
   methods: {
-    fileChanged(event) {
-      this.file = event.target.files[0];
-      this.url = URL.createObjectURL(this.file);
-    },
     close() {
       this.$emit('close');
     },
-    chooseImage() {
-      this.$refs.fileInput.click()
-    },
-    async upload() {
+    async addEvent() {
       try {
-        const formData = new FormData();
-        formData.append('photo', this.file, this.file.name);
-        formData.append('title', this.title);
-        formData.append('description', this.description);
-        await axios.post("/api/photos", formData);
-        this.file = null;
-        this.url = "";
-        this.title = "";
+        if (!this.category)
+          this.catgory = "other";
+        await axios.post("/api/events", {
+          title: this.title,
+          description: this.description,
+          dateTime: this.dateTime,
+          category: this.category,
+        });
+        this.title = '';
         this.description = "";
-        this.$emit('uploadFinished');
+        this.dateTime = "";
+        this.category = "";
+        this.$emit('eventAddFinished');
       } catch (error) {
         this.error = "Error: " + error.response.data.message;
       }
@@ -98,7 +97,7 @@ export default {
 .modal-container {
   width: 50%;
   height: max-content;
-  margin-top: 80px;
+  margin-top: 70px;
   padding: 20px 30px;
   background-color: #fff;
   border-radius: 2px;
@@ -134,6 +133,11 @@ form {
   font-size: 11pt;
 }
 
+legend {
+  font-size: 1.2em;
+  font-weight: 700;
+}
+
 input {
   width: 100%;
 }
@@ -159,16 +163,7 @@ textarea {
   background: #E0E0E0;
 }
 
-.fileInput {
-  display: none;
-}
-
-img {
-  width: 200px;
-}
-
-.buttons {
-  display: flex;
-  justify-content: space-between;
+button {
+  margin-right: 5px;
 }
 </style>

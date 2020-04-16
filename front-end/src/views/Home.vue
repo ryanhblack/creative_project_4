@@ -1,32 +1,33 @@
 <template>
   <div class="home">
-    <image-gallery :photos="photos" />
+    <h1>All Events</h1>
+    <calendar :events="events" />
     <p v-if="error">{{error}}</p>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import ImageGallery from '@/components/ImageGallery.vue';
+import Calendar from '@/components/Calendar.vue';
 export default {
   name: 'Home',
   components: {
-    ImageGallery,
+    Calendar,
   },
   data() {
     return {
-      photos: [],
+      events: [],
       error: '',
     }
   },
   created() {
-    this.getPhotos();
+    this.getEvents();
   },
   methods: {
-    async getPhotos() {
+    async getEvents() {
       try {
-        let response = await axios.get("/api/photos/all");
-        this.photos = response.data;
+        let response = await axios.get("/api/events/all");
+        this.events = response.data;
       } catch (error) {
         this.error = error.response.data.message;
       }
@@ -36,6 +37,12 @@ export default {
 </script>
 
 <style scoped>
+  h1 {
+    color: #000;
+    text-decoration: underline;
+    margin-bottom: 30px;
+  }
+  
   .home {
     padding-top: 60px;
   }

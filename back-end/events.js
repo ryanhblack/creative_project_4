@@ -2,51 +2,41 @@ const mongoose = require('mongoose');
 const express = require("express");
 const router = express.Router();
 
-// Configure multer so that it will upload to '/public/images'
-const multer = require('multer')
-const upload = multer({
-  dest: '../front-end/public/images/',
-  limits: {
-    fileSize: 10000000
-  }
-});
-
 const users = require("./users.js");
 const User = users.model;
 const validUser = users.valid;
 
-const photoSchema = new mongoose.Schema({
+const eventSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User'
   },
-  path: String,
   title: String,
   description: String,
+  category: String,
+  dateTime: {
+    type: Date,
+    default: Date.now
+  },
   created: {
     type: Date,
     default: Date.now
   },
 });
 
-const Photo = mongoose.model('Photo', photoSchema);
+const Event = mongoose.model('Event', eventSchema);
 
-// upload photo
-router.post("/", validUser, upload.single('photo'), async (req, res) => {
-  // check parameters
-  if (!req.file)
-    return res.status(400).send({
-      message: "Must upload a file."
-    });
-
-  const photo = new Photo({
+// add event
+router.post("/", validUser, async (req, res) => {
+  const event = new Event({
     user: req.user,
-    path: "/images/" + req.file.filename,
     title: req.body.title,
     description: req.body.description,
+    category: req.body.category,
+    dateTime: req.body.dateTime,
   });
   try {
-    await photo.save();
+    await event.save();
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);
@@ -54,44 +44,41 @@ router.post("/", validUser, upload.single('photo'), async (req, res) => {
   }
 });
 
-// get my photos
+// get my events
 router.get("/", validUser, async (req, res) => {
-  // return photos
   try {
-    let photos = await Photo.find({
+    let events = await Event.find({
       user: req.user
     }).sort({
-      created: -1
+      dateTime: 1
     }).populate('user');
-    return res.send(photos);
+    return res.send(events);
   } catch (error) {
     console.log(error);
     return res.sendStatus(500);
   }
 });
 
-// get all photos
+// get all events
 router.get("/all", async (req, res) => {
   try {
-    let photos = await Photo.find().sort({
-      created: -1
+    let events = await Event.find().sort({
+      dateTime: 1
     }).populate('user');
-    return res.send(photos);
+    return res.send(events);
   } catch (error) {
     console.log(error);
     return res.sendStatus(500);
   }
 });
 
-// get all photos
+// get one event
 router.get("/:id", async (req, res) => {
   try {
-    let photos = await Photo.find({
+    let photo = await Event.find({
       _id: req.params.id
-    }).sort({
-      created: -1
     }).populate('user');
-    return res.send(photos);
+    return res.send(photo);
   } catch (error) {
     console.log(error);
     return res.sendStatus(500);
@@ -99,6 +86,6 @@ router.get("/:id", async (req, res) => {
 });
 
 module.exports = {
-  model: Photo,
+  model: Event,
   routes: router,
 }
