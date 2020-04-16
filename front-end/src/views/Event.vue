@@ -43,7 +43,7 @@ export default {
     async getEvent() {
       try {
         this.response = await axios.get("/api/events/" + this.$route.params.id);
-        this.photo = this.response.data[0];
+        this.event = this.response.data[0];
       } catch (error) {
         this.error = error.response.data.message;
       }
@@ -55,13 +55,13 @@ export default {
 <style scoped>
   .event {
     width: 100%;
-    padding-top: 100px;
   }
   
   .event .title {
     text-align: center;
     font-size: 120%;
     font-weight: 700;
+    color: #000;
   }
   
   .event .author {
@@ -71,13 +71,10 @@ export default {
   }
   
   .event .description {
-    width: 80%;
-    float: left;
+    text-align: center;
   }
   
   .event .date {
-    text-align: right;
-    width: 20%;
-    float: right;
+    text-align: center;
   }
 </style>
